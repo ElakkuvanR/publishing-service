@@ -1,0 +1,16 @@
+version: '2.4'
+
+services:
+  publish:
+    container_name: publishingservice
+    hostname: rc-sitecore-docker-pubsvc
+    mem_limit: 3GB
+    ports:
+      - "8000:80"
+    build:
+      context: ./docker/build/publishing-service
+      args:
+        PUBLISHING_PACKAGE: Sitecore Publishing Service.zip
+        CONN_STRING_CORE: Data Source="";Initial Catalog="";User Id="";Password="";
+        CONN_STRING_MASTER: Data Source="";Initial Catalog="";User Id="";Password="";
+        CONN_STRING_WEB: Data Source="";Initial Catalog="";User Id="";Password="";

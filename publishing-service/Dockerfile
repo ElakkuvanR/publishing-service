@@ -43,3 +43,16 @@ RUN	$coreArgs = 'configuration setconnectionstring core """' + $env:CONN_STRING_
 
 # Upgrade schema
 RUN Start-Process $env:PUBLISHING_HOST -ArgumentList 'schema upgrade --force' -NoNewWindow -Wait; 
+
+# For references - to use when there are issues in upgrading the schemas
+# RUN Start-Process Sitecore.Framework.Publishing.Host.exe -ArgumentList 'configuration setconnectionstring core "\"Data Source=sqldev;Initial Catalog=sitecorerc-ase-app-prod-rg-core-db_Primary;User Id=sa;Password=HASH-epsom-sunset-cost7!;\""' -NoNewWindow -Wait;
+# RUN Start-Process Sitecore.Framework.Publishing.Host.exe -ArgumentList 'configuration setconnectionstring master "\"Data Source=sqldev;Initial Catalog=sitecorerc-ase-app-prod-rg-master-db_Primary;User Id=sa;Password=HASH-epsom-sunset-cost7!;\""' -NoNewWindow -Wait;
+# RUN Start-Process Sitecore.Framework.Publishing.Host.exe -ArgumentList 'configuration setconnectionstring web "\"Data Source=sqldev;Initial Catalog=royalcanin_Web_Primary;User Id=sa;Password=HASH-epsom-sunset-cost7!;\""' -NoNewWindow -Wait;
+
+RUN Start-Process Sitecore.Framework.Publishing.Host.exe -ArgumentList 'configuration set sitecore:publishing:instancename -v rc-sitecore-docker-pubsvc' -NoNewWindow -Wait;
+
+# install the iis with hosts for the publishing service
+RUN $args = 'iis install --hosts --force --sitename ' + $env:SITE_NAME + ' --apppool ' + $env:SITE_NAME; `
+	Start-Process $env:PUBLISHING_HOST -ArgumentList $args -NoNewWindow -Wait;  
+	
+EXPOSE 80
